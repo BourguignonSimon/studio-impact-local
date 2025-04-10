@@ -1,0 +1,38 @@
+name: Kanban Automation
+
+on:
+  issues:
+    types: [opened, closed, reopened]
+  pull_request:
+    types: [opened, closed, reopened]
+
+jobs:
+  move-to-done:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues' && github.event.action == 'closed'
+    steps:
+      - uses: alex-page/github-project-automation-plus@v0.8.1
+        with:
+          project: Studio d'Impact Local Kanban
+          column: Terminé
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+  move-to-in-progress:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'issues' && (github.event.action == 'opened' || github.event.action == 'reopened')
+    steps:
+      - uses: alex-page/github-project-automation-plus@v0.8.1
+        with:
+          project: Studio d'Impact Local Kanban
+          column: À faire
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+  move-pr-to-in-progress:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && github.event.action == 'opened'
+    steps:
+      - uses: alex-page/github-project-automation-plus@v0.8.1
+        with:
+          project: Studio d'Impact Local Kanban
+          column: En cours
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
